@@ -17,6 +17,7 @@ export const resumePdf = async (req: Request, res: Response) => {
   const filesDataBuffer: any[] = [];
 
   Object.values(uploadedFiles).forEach((value) => {
+    if (!filesAreValid) return;
     if (!Array.isArray(value) && value.mimetype !== 'application/pdf') {
       filesAreValid = false;
       return res.status(400).json({
@@ -51,7 +52,7 @@ export const resumePdf = async (req: Request, res: Response) => {
       "REGRAS: Use português brasileiro como linguagem primária, só use outra língua se o usuário pedir. Prompt do usuário: " + prompt
     , ...filesDataBuffer]);
 
-    res.status(200).json({ content: generatedContent.response.text() });
+    return res.status(200).json({ content: generatedContent.response.text() });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', description: 'Ocorreu um erro interno no servidor' });
